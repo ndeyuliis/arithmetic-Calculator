@@ -19,6 +19,14 @@ const userSchema = new Schema({
         type: String,
         required: true
   },
+  token:{
+    type: String,
+},
+})
+
+userSchema.pre('save', function () {
+    const user = this
+    
 })
 
 export default model ('user', userSchema)
