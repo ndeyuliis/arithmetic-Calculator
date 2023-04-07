@@ -1,14 +1,16 @@
 import {Router} from 'express'
 import userRoutes from './userRoutes'
 import loginRoutes from './loginRoutes';
-
+import operationRoutes from './operationRoutes';
+import recordRoutes from './recordRoutes';
 
 const router = Router()
 
-
-// User routes
+// Routes
 router.use('/user', userRoutes)
 router.use('/register', loginRoutes)
+router.use('/operation', operationRoutes)
+router.use('/record', recordRoutes)
 
 
 router.get('/ping', (req, res) => {
