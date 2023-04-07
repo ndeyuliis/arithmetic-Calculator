@@ -24,4 +24,4 @@ const recordSchema = new Schema({
     },
 })
 
-export default model ('user', recordSchema)
+export default model ('record', recordSchema)

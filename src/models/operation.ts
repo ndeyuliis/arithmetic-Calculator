@@ -9,4 +9,4 @@ const operationSchema = new Schema({
     }
 })
 
-export default model ('user', operationSchema)
+export default model ('operation', operationSchema)
