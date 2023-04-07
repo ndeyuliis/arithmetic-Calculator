@@ -1,7 +1,7 @@
 import express from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
-import Routes from './routes/loginRoutes'
+import Routes from './routes/indexRoutes'
 // initializations
 
 const app = express();

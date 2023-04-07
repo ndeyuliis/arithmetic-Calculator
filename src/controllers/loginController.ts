@@ -39,7 +39,7 @@ export const createUser = async (req: Request , res: Response) => {
 };
 
 // login
-export const findUser = async (req, res) => {
+export const loginUser = async (req, res) => {
 		const { userName, password } = req.body;
 	if (!(userName && password)) {
 		return res.status(400).send('Email and password is required');
