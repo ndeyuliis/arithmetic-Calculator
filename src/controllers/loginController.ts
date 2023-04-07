@@ -30,6 +30,8 @@ export const createUser = async (req: Request , res: Response) => {
 		const newUser = new User({
 			password: encryptPass,
 			userName: req.body.userName,
+			status: 'active',
+			amount: 50000
 		});
 		const userSaved = await newUser.save();
 		res.status(201).json(newUser);
@@ -47,13 +49,27 @@ export const loginUser = async (req, res) => {
 	const existEmail = await User.findOne({ userName });
 	if (!existEmail) {
 		return res.status(400).send('Email does not exist');
-	} else {
+	} else if (existEmail.status == 'active') {
+
 		const existPass = bcrypt.compareSync(password, existEmail.password);
 		if (existPass === true) {
-			return res.status(200).json({token: createToken(existPass)})
+			
+			const tokenSeguridad = await createToken(existPass)
+			await User.updateOne({userName},{
+							$set:{
+								token: tokenSeguridad
+							}
+
+							})
+
+			return res.status(200).json({token: tokenSeguridad})
+
 		} else {
 			return res.status(400).send('The email or Password is wrong');
 		}
+	}else{
+		return res.status(400).send('The user is inactive');
+
 	}
 };
 
