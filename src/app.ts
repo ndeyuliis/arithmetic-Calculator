@@ -1,6 +1,7 @@
 import express from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
+import Routes from './routes/indexRoutes'
 // initializations
 
 const app = express();
@@ -20,5 +21,7 @@ app.use(express.json())
 app.get('/', (req, res) => {
     res.send('Arithmetic Calculator REST API by Nicolas ')
 });
+
+app.use(Routes)
 
 export default app

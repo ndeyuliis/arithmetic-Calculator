@@ -1,15 +1,12 @@
 import mongoose from 'mongoose'
 import config from './config/config'
 
-mongoose.connect(config.DB.URI)
-
-const connection = mongoose.connection;
-
-connection.once('open', () => {
-    console.log('Mongodb connection established');
-});
-
-connection.on('error', err => {
-    console.log(err);
-    process.exit(0);
-})
+(async () => {
+	try {
+		const db = await mongoose.connect(config.URI);
+		console.log(' Database is connected to:', db.connection.name);
+		// self-invoked function
+	} catch (error) {
+		console.error(error);
+	}
+})();
