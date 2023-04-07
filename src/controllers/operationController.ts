@@ -29,3 +29,22 @@ export const findOperation = async (req, res) => {
         });
       }
       };
+
+export const OperationAdd = (req, res) => {
+
+      }
+export const OperationSub = (req, res) => {
+        
+      }
+export const OperationMult = (req, res) => {
+        
+      }
+export const OperationDiv = (req, res) => {
+        
+      }
+export const OperationSqua = (req, res) => {
+        
+      }
+export const OperationRandom = (req, res) => {
+        
+      }     
