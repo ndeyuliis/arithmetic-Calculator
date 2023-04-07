@@ -1,10 +1,10 @@
-import User from '../models/user';
+import Users from '../models/user';
 
 
 export const FindAllUsers = async (req, res) => {
-	await User.find()
-		.then((users) => {
-			res.json(users);
+	await Users.find()
+		.then((usersFind) => {
+			res.json(usersFind);
 		})
 		.catch((err) => {
 			res.status(404).json({
@@ -14,16 +14,14 @@ export const FindAllUsers = async (req, res) => {
 };
 
 export const findUser = async (req, res) => {
-        console.log(req.params.id)
         try {          
-        const task = await User.findById(req.params.id);
-        console.log(task, 'usuario')
+        const userFind = await Users.findById(req.params.id);
         // validar si existe la tarea
-            if (!task) 
+            if (!userFind) 
             return res
             .status(404)
             .json({message: 'El usuario no existe'});
-             res.json(task);
+             res.json(userFind);
              // mensaje de error por error interno
       } catch (error) {
         res.status(500).json({
