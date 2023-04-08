@@ -8,19 +8,20 @@ const recordSchema = new Schema({
         type: Number,   
     },
     user_id:{
-        type: Number, 
+        type:String, 
     },
     amount:{
         type: String,
-        required: true
     },
-    operation_response:{
-        type: String,
+    user_balance:{
+        type: Number,
         required: true    
     },
+    operation_response:{
+        type: Number,
+    },
     date:{
-        type: String,
-        required: true
+        type: Date,
     },
 })
 
