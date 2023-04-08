@@ -1,3 +1,4 @@
+import { json } from 'express';
 import Record from '../models/record'
 
 export const FindAllRecords = async (req, res) => {
@@ -28,3 +29,13 @@ export const findRecord = async (req, res) => {
         });
       }
       };
+      
+      
+export const deleteAllRecord = async (req, res) => {
+        try {
+          await Record.deleteMany();
+          res.status(200).json({msg: 'All Data successfully deleted'});
+        } catch (err) {
+          res.status(400).json({msg: err});
+        }
+};
