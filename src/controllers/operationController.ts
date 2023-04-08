@@ -31,7 +31,6 @@ export const findOperation = async (req, res) => {
       }
       };
 
-
 export const veriRecord = async (req, res) => {
       console.log(req.params.num, req.params.type)
       const userData = await User.findOne({ userName: req.body.userName })
@@ -82,7 +81,7 @@ const operations = async (record, typeOperation, valueUser) => {
             break;
 
             case '5':
-            result =await square_root(record.user_balance, valueUser);
+            result =await square_root(record.user_balance);
             break;
 
             case '6':
@@ -120,9 +119,9 @@ const divide = async (amount, value) => {
 return Number(amount) / Number(value)
                 
 }
-const square_root = async (amount, value) => {
+const square_root = async (value) => {
       
-return Number(amount) + Number(value)
+return Math.sqrt(value)
                 
 }
 
