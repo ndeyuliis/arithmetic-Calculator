@@ -3,10 +3,13 @@ import bcrypt, { hash } from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import {Request, Response} from 'express'
 import config from '../config/config'
+import Record from '../models/record'
 
-function createToken(user) {
-return jwt.sign({id: user.id, email: user.email}, config.jwtSecret, {
+
+function createToken(user, password) {
+return jwt.sign({user: user.userName, password}, config.jwtSecret, {
 	expiresIn: 86400
+	
 })
 }
 
@@ -31,9 +34,15 @@ export const createUser = async (req: Request , res: Response) => {
 			password: encryptPass,
 			userName: req.body.userName,
 			status: 'active',
-			amount: 50000
 		});
 		const userSaved = await newUser.save();
+		const newRecord = new Record({
+			user_id: userSaved?._id,
+			amount: 50000,
+			user_balance: 50000,
+		});
+		const recordSaved = await newRecord.save();
+
 		res.status(201).json(newUser);
 	} catch (err) {
 		res.status(500).send('error')
@@ -54,7 +63,7 @@ export const loginUser = async (req, res) => {
 		const existPass = bcrypt.compareSync(password, existEmail.password);
 		if (existPass === true) {
 			
-			const tokenSeguridad = await createToken(existPass)
+			const tokenSeguridad = await createToken(existEmail, existPass)
 			await User.updateOne({userName},{
 							$set:{
 								token: tokenSeguridad
