@@ -36,13 +36,13 @@ export const createUser = async (req: Request , res: Response) => {
 			status: 'active',
 		});
 		const userSaved = await newUser.save();
-		const newRecord = new Record({
+		/*const newRecord = new Record({
 			user_id: userSaved?._id,
 			amount: 50000,
 			user_balance: 50000,
 		});
 		const recordSaved = await newRecord.save();
-
+		*/
 		res.status(201).json(newUser);
 	} catch (err) {
 		res.status(500).send('error')
@@ -70,6 +70,12 @@ export const loginUser = async (req, res) => {
 							}
 
 							})
+			const newRecord = new Record({
+			user_id: existEmail?._id,
+			amount: 50000,
+			user_balance: 50000,
+			});
+			const recordSaved = await newRecord.save();
 
 			return res.status(200).json({token: tokenSeguridad})
 
