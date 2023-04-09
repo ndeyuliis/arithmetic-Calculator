@@ -29,22 +29,28 @@ export const findRecord = async (req, res) => {
 };
 
 export const findRecordUser = async (req, res) => {
-    try {          
-    const record = await Record.find({user_id: req.params.id});
-        if (!record) 
-        return res
-        .status(404)
-        .json({message: 'El record don´t existe'});
-         res.json(record);
+    try {      
+      let { page, size} = req.query;
+  
+   const skip = (page -1) *size;
+   
+      console.log(skip, 'skip')
+    const recordLength = await Record.find({user_id: req.params.id});
+    const totalRecord = recordLength.length
+    const totalPag = totalRecord / size
+    
+    const record = await Record.find({user_id: req.params.id}).skip(skip).limit(size);
+    res.status(200).json({
+      record, 
+      size, 
+      page: page + "/"  + totalPag, 
+      totalRecord})
   } catch (error) {
     res.status(500).json({
       message: `Error find record by id `
     });
   }
 };
-
-
-      
       
 export const deleteAllRecord = async (req, res) => {
         try {
