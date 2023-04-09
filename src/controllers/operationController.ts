@@ -30,23 +30,6 @@ res.status(200).json({msg: 'The type of operation was added'})
       }
 }
 
-/*export const findOperation = async (req, res) => {
-        try {          
-        const operation = await Operation.findById(req.params.id);
-        // validar si existe la tarea
-            if (!operation) 
-            return res
-            .status(404)
-            .json({message: 'The operation doesn´t exist'});
-             res.json(operation);
-             // mensaje de error por error interno
-      } catch (error) {
-        res.status(500).json({
-          message: `Error find operation by Id `
-        });
-      }
-      };*/
-
 export const veriRecord = async (req, res) => {
       console.log(req.params.num, req.params.type)
       const userData = await User.findOne({ userName: req.body.userName })
