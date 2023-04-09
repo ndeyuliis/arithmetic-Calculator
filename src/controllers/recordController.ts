@@ -26,7 +26,24 @@ export const findRecord = async (req, res) => {
           message: `Error find record by id `
         });
       }
-      };
+};
+
+export const findRecordUser = async (req, res) => {
+    try {          
+    const record = await Record.find({user_id: req.params.id});
+        if (!record) 
+        return res
+        .status(404)
+        .json({message: 'El record don´t existe'});
+         res.json(record);
+  } catch (error) {
+    res.status(500).json({
+      message: `Error find record by id `
+    });
+  }
+};
+
+
       
       
 export const deleteAllRecord = async (req, res) => {
