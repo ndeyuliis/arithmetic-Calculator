@@ -51,7 +51,8 @@ export const veriRecord = async (req, res) => {
       console.log(req.params.num, req.params.type)
       const userData = await User.findOne({ userName: req.body.userName })
       const recordData= await Record.find({user_id: userData?._id}).sort({$natural: -1}).limit(1)
-      console.log(recordData, 'recordate')
+      const operationData= await Operation.find({type: req.params.type})
+      console.log(operationData, 'operation')
       if(recordData[0] != undefined){
             let totalOperation = await operations(recordData[0], req.params.type, req.params.num)
             if(totalOperation < 0){
@@ -60,10 +61,11 @@ export const veriRecord = async (req, res) => {
             }else{
                   const dateNow = Date.now();
                   const newRecord = new Record({
-                      user_id: recordData[0].user_id,
+                      user_id: userData?._id,
+                      operation_id: operationData[0]._id,
                       amount: recordData[0].amount,
                       operation_response: totalOperation, 
-                      user_balance: totalOperation != Number ? 0 : totalOperation,
+                      user_balance: !isNaN(totalOperation) ? totalOperation : recordData[0].user_balance,
                       date: dateNow
                 });
                 const operationSaved = await newRecord.save();
@@ -81,27 +83,27 @@ const operations = async (record, typeOperation, valueUser) => {
       var result
       console.log(record, 'record')
       switch(typeOperation){
-            case '1':
+            case 'addition':
             result = await add(record.user_balance, valueUser);
             break;
 
-            case '2':
+            case 'subtraction':
             result = await subtract(record.user_balance, valueUser);
             break;
 
-            case '3':
+            case 'multiplication':
             result =await multiply(record.user_balance, valueUser);
             break;
 
-            case '4':
+            case 'division':
             result =await divide(record.user_balance, valueUser);
             break;
 
-            case '5':
+            case 'square_root':
             result =await square_root(record.user_balance);
             break;
 
-            case '6':
+            case 'random':
             result =await randomInteger(valueUser);
             break;      
 
