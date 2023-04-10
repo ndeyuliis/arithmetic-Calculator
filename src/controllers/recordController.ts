@@ -32,7 +32,7 @@ export const findRecordUser = async (req, res) => {
     try {      
       let { page, size} = req.query;
   
-   const skip = (page -1) *size;
+   const skip = (page -1) *size || 1;
    
       console.log(skip, 'skip')
     const recordLength = await Record.find({user_id: req.params.id});
