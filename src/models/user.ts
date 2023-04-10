@@ -23,6 +23,9 @@ const userSchema = new Schema({
     token:{
     type: String,
     },
+    lastTimeOnLine:{
+        type: Date,
+    },
 })
 
 userSchema.pre('save', function () {
