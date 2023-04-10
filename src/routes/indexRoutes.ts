@@ -1,8 +1,8 @@
-import {Router} from 'express'
+import { Router } from 'express'
 import userRoutes from './userRoutes'
-import loginRoutes from './loginRoutes';
-import operationRoutes from './operationRoutes';
-import recordRoutes from './recordRoutes';
+import loginRoutes from './loginRoutes'
+import operationRoutes from './operationRoutes'
+import recordRoutes from './recordRoutes'
 
 const router = Router()
 
@@ -12,17 +12,16 @@ router.use('/register', loginRoutes)
 router.use('/operation', operationRoutes)
 router.use('/record', recordRoutes)
 
-
 router.get('/ping', (req, res) => {
-	res.status(200).send('pong');
-});
+  res.status(200).send('pong')
+})
 
 // in case the link does not exist
 router.use((req, res, next) => {
-	res.status(404);
-	res.json({
-		message: 'Error: Path not found',
-	});
-});
+  res.status(404)
+  res.json({
+    message: 'Error: Path not found',
+  })
+})
 
-export default router;
+export default router

@@ -1,38 +1,40 @@
-import {model, Schema, Document} from 'mongoose'
+import { model, Schema } from 'mongoose'
 
-const userSchema = new Schema({
-    userName:{
-        type: String,
-        unique: true,
-        required: true,
-        lowercase: true,
-        trim:true
+const userSchema = new Schema(
+  {
+    userName: {
+      type: String,
+      unique: true,
+      required: true,
+      lowercase: true,
+      trim: true,
     },
-    password:{
-        type: String,
-        required: true    
+    password: {
+      type: String,
+      required: true,
     },
-    status:{
-        type: String,
-        require: true
+    status: {
+      type: String,
+      require: true,
     },
     amount: {
-        type: Number,
-        require: true
-    },    
-    token:{
-    type: String,
+      type: Number,
+      require: true,
     },
-    lastTimeOnLine:{
-        type: Date,
+    token: {
+      type: String,
     },
-},{
+    lastTimeOnLine: {
+      type: Date,
+    },
+  },
+  {
     versionKey: false,
-})
+  }
+)
 
 userSchema.pre('save', function () {
-    const user = this
-    
+  const user = this
 })
 
-export default model ('user', userSchema)
+export default model('user', userSchema)

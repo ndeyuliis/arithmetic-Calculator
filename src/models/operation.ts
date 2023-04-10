@@ -1,11 +1,14 @@
-import {model, Schema, Document} from 'mongoose'
+import { model, Schema } from 'mongoose'
 
-const operationSchema = new Schema({
-     type:{
-        type:String,
+const operationSchema = new Schema(
+  {
+    type: {
+      type: String,
     },
-},{
-        versionKey: false,
-})
+  },
+  {
+    versionKey: false,
+  }
+)
 
-export default model ('operation', operationSchema)
+export default model('operation', operationSchema)
