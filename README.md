@@ -16,26 +16,34 @@ npm run dev
 
 # Api endpoints
 
-* User endpoint
+- User endpoint
 
 /user/ --> List all the user
+
 /user/:id --> Search a user by Id
 
-* Login endpoint
+- Login endpoint
 
 /register/singup --> Create new user
+
 /register/login --> Login user and create token
+
 /register/logout --> Logout user and delete token
+
 /register/refresh --> Verify the user's token
 
-* Operation endpoint
+- Operation endpoint
 
 /operation/ --> List all operation
+
 /operation/:type/:num --> Perform the requested operation
+
 /operation/create --> Create new operation
 
-* Record endpoint
+- Record endpoint
 
 /record/ --> List all records
+
 /record/:id --> List record by Id
+
 /record/user/:id --> List all records of a user
