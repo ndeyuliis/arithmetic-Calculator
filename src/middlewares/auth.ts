@@ -5,7 +5,7 @@ import User from '../models/user';
 
 const verifyToken = async (req, res, next) => {
 	const token = req.headers['token'];
-	if (!token) {
+	if (!token || token == undefined) {
 		return res.status(403).send('A token is required for authentication');
 	}
 	try {

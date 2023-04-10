@@ -83,30 +83,25 @@ export const loginUser = async (req, res) => {
 
 // logout
 export const updateUser = async (req, res) => {
-	if (!req.body.email && !req.body.password) {
+	try{
+	if (!req.body.userName && !req.body.password) {
 		return res.status(400).send({
 			message: 'User login can not be empty',
 		});
 	}
 	const dateNow = Date.now();
-	User.findOneAndUpdate(
-		req.body.email,
-		{
+	await User.updateOne({
+		userName: req.body.userName},{
+		$set:{
 			lastTimeOnLine: dateNow,
+			token: ""
 		},
-		{ new: true }
-	)
-		.then((note) => {
-			if (!note) {
-				return res.status(401).send({
-					message: 'Problem with user',
-				});
-			}
-			res.send('The session has been closed');
-		})
-		.catch((err) => {
+	})
+
+	res.send('The session has been closed');
+		}catch(err) {
 			res.json(err);
-		});
+		};
 };
 
 function validateEmail(email) {
