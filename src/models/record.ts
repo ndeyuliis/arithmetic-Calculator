@@ -24,6 +24,8 @@ const recordSchema = new Schema({
     date:{
         type: Date,
     },
+},{
+    versionKey: false,
 })
 
 export default model ('record', recordSchema)
