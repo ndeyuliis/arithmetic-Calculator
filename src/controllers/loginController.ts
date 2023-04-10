@@ -5,8 +5,8 @@ import { Request, Response } from 'express'
 import config from '../config/config'
 import Record from '../models/record'
 
-function createToken(user, password) {
-  return jwt.sign({ user: user.userName, password }, config.jwtSecret, {
+async function createToken(user: String, password: String) {
+  return jwt.sign({ user, password }, config.jwtSecret, {
     expiresIn: 86400,
   })
 }
@@ -54,7 +54,7 @@ export const loginUser = async (req: Request, res: Response) => {
   } else if (existEmail.status == 'active') {
     const existPass = bcrypt.compareSync(password, existEmail.password)
     if (existPass === true) {
-      const tokenSecurity = await createToken(existEmail, existPass)
+      const tokenSecurity = await createToken(userName, password)
       await User.updateOne(
         { userName },
         {
@@ -106,13 +106,13 @@ export const updateUser = async (req: Request, res: Response) => {
   }
 }
 
-function validateEmail(email:String) {
+function validateEmail(email: String) {
   const re = /\S+@\S+\.\S+/
   const result = re.test(String(email))
   return result
 }
 
-async function register(params) {
+async function register(params: any) {
   const salt = await bcrypt.genSalt(10)
   const passwordHash = await bcrypt.hash(params, salt)
   return passwordHash

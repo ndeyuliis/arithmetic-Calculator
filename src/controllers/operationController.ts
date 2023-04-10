@@ -65,15 +65,18 @@ export const veriRecord = async (req: Request, res: Response) => {
 }
 
 const operationFunctions = {
-  addition: (balance:Number, value:Number) => add(balance, value),
-  subtraction: (balance:Number, value:Number) => subtract(balance, value),
-  multiplication: (balance:Number, value:Number) => multiply(balance, value),
-  division: (balance:Number, value:Number) => divide(balance, value),
+  addition: (balance: Number, value: Number) => add(balance, value),
+  subtraction: (balance: Number, value: Number) => subtract(balance, value),
+  multiplication: (balance: Number, value: Number) => multiply(balance, value),
+  division: (balance: Number, value: Number) => divide(balance, value),
   square_root: (balance: Number) => square_root(balance),
   random: (value: Number) => randomInteger(value),
 }
+interface Record {
+  user_balance: number
+}
 
-const operations = async (record, typeOperation, valueUser) => {
+const operations = async (record: Record, typeOperation, valueUser: String) => {
   console.log(record, 'record')
   const operation = operationFunctions[typeOperation]
   console.log(operation, 'operation')
