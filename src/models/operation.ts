@@ -1,10 +1,7 @@
 import {model, Schema, Document} from 'mongoose'
 
 const operationSchema = new Schema({
-    id:{
-        type: Number,
-    },
-    type:{
+     type:{
         type:String,
     }
 })

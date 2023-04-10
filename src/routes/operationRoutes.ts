@@ -1,24 +1,15 @@
 import {Router} from 'express'
 import {
 	FindAllOperation,
-	findOperation,
-	OperationAdd,
-	OperationSub,
-	OperationMult,
-	OperationDiv,
-	OperationSqua,
-	OperationRandom
+	createOperation,
+	veriRecord
 } from '../controllers/operationController';
+import auth from '../middlewares/auth';
 
 const router = Router()
 
 router.get('/', FindAllOperation)
-router.get('/:id', findOperation)
-router.get('/addition', OperationAdd)
-router.get('/subtraction', OperationSub)
-router.get('/multiplication', OperationMult)
-router.get('/division', OperationDiv)
-router.get('/square_root', OperationSqua)
-router.get('/random', OperationRandom)
+router.put('/:type/:num', auth, veriRecord)
+router.post('/create', createOperation )
 
 export default router

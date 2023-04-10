@@ -14,10 +14,15 @@ const userSchema = new Schema({
     },
     status:{
         type: String,
-  },
-  token:{
+        require: true
+    },
+    amount: {
+        type: Number,
+        require: true
+    },    
+    token:{
     type: String,
-},
+    },
 })
 
 userSchema.pre('save', function () {
