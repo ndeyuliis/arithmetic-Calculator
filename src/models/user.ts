@@ -26,6 +26,8 @@ const userSchema = new Schema({
     lastTimeOnLine:{
         type: Date,
     },
+},{
+    versionKey: false,
 })
 
 userSchema.pre('save', function () {
