@@ -1,11 +1,10 @@
-import {Router} from 'express'
+import { Router } from 'express'
 import {
-	createUser,
-	loginUser,
-	updateUser
-} from '../controllers/loginController';
-import auth from '../middlewares/auth';
-
+  createUser,
+  loginUser,
+  updateUser,
+} from '../controllers/loginController'
+import auth from '../middlewares/auth'
 
 const router = Router()
 
@@ -14,9 +13,7 @@ router.post('/singup', createUser)
 router.put('/login', loginUser)
 router.put('/logout', updateUser)
 router.get('/refresh', auth, (req, res) => {
-	res.status(200).send('Welcome');
-});
+  res.status(200).send('Welcome')
+})
 
 export default router
-
-

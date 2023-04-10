@@ -1,31 +1,34 @@
-import {model, Schema} from 'mongoose'
-import mongoose from 'mongoose';
+import { model, Schema } from 'mongoose'
+import mongoose from 'mongoose'
 
-const recordSchema = new Schema({
-    id:{
-        type: Number,
+const recordSchema = new Schema(
+  {
+    id: {
+      type: Number,
     },
-    operation_id:{
-        type: mongoose.Schema.Types.ObjectId,   
+    operation_id: {
+      type: mongoose.Schema.Types.ObjectId,
     },
-    user_id:{
-        type: mongoose.Schema.Types.ObjectId
+    user_id: {
+      type: mongoose.Schema.Types.ObjectId,
     },
-    amount:{
-        type: String,
+    amount: {
+      type: String,
     },
-    user_balance:{
-        type: Number,
-        required: true    
+    user_balance: {
+      type: Number,
+      required: true,
     },
-    operation_response:{
-        type: String,
+    operation_response: {
+      type: String,
     },
-    date:{
-        type: Date,
+    date: {
+      type: Date,
     },
-},{
+  },
+  {
     versionKey: false,
-})
+  }
+)
 
-export default model ('record', recordSchema)
+export default model('record', recordSchema)

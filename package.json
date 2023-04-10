@@ -1,12 +1,16 @@
 {
   "name": "arithmetic-calculator",
   "version": "1.0.0",
-  "description": "",
+  "description": "Arithmetic Calculator REST API",
   "main": "index.js",
   "scripts": {
     "start": "node dist/index.js",
     "dev": "tsc-watch --onSuccess \"node dist/index.js\" ",
-    "build": "tsc"
+    "build": "tsc",
+    "format:check": "prettier --check .",
+    "format:write": "prettier --write .",
+    "lint:check": "eslint .",
+    "lint:fix": "eslint --fix ."
   },
   "keywords": [],
   "author": "",
@@ -28,8 +32,21 @@
     "@types/jsonwebtoken": "^9.0.1",
     "@types/mongoose": "^5.11.97",
     "@types/morgan": "^1.9.4",
+    "@typescript-eslint/eslint-plugin": "^5.58.0",
+    "@typescript-eslint/parser": "^5.58.0",
     "dotenv": "^16.0.3",
+    "eslint": "^8.38.0",
+    "eslint-config-prettier": "^8.8.0",
+    "prettier": "^2.8.7",
     "tsc-watch": "^6.0.0",
     "typescript": "^5.0.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ndeyuliis/arithmetic-Calculator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ndeyuliis/arithmetic-Calculator/issues"
+  },
+  "homepage": "https://github.com/ndeyuliis/arithmetic-Calculator#readme"
 }

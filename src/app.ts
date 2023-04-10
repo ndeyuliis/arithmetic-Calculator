@@ -4,23 +4,21 @@ import cors from 'cors'
 import Routes from './routes/indexRoutes'
 // initializations
 
-const app = express();
+const app = express()
 
 // settings
-app.set('port', process.env.PORT || 3000);
-
+app.set('port', process.env.PORT || 3000)
 
 //middleware
-app.use(morgan('dev'));
+app.use(morgan('dev'))
 app.use(cors())
-app.use(express.urlencoded({extended: false}))
+app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
-
 
 //routes
 app.get('/', (req, res) => {
-    res.send('Arithmetic Calculator REST API by Nicolas ')
-});
+  res.send('Arithmetic Calculator REST API by Nicolas ')
+})
 
 app.use(Routes)
 

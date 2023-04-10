@@ -29,8 +29,3 @@ Record endpoint
 /record/ --> Lis all records
 /record/:id --> List record by Id
 /record/user/:id --> List all records of a user
-
-
-
-
-
