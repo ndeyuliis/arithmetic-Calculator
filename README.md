@@ -1,4 +1,4 @@
-﻿Arithmetic Calculator REST API
+﻿# Arithmetic Calculator REST API
 
  Implement a Web platform to provide a simple calculator functionality (addition, subtraction,
 multiplication, division, square root, and a random string generation) where each functionality will
@@ -6,35 +6,35 @@ have a separate cost per request.
  User’s will have a starting credit/balance. Each request will be deducted from the user’s balance.
 If the user’s balance isn’t enough to cover the request cost, the request shall be denied.
 
-Instructions
+# Instructions
 
 npm install
 
-Running
+# Running
 
 npm run dev
 
-Api endpoints
+# Api endpoints
 
-User endpoint
+* User endpoint
 
 /user/ --> List all the user
 /user/:id --> Search a user by Id
 
-Login endpoint
+* Login endpoint
 
 /register/singup --> Create new user
 /register/login --> Login user and create token
 /register/logout --> Logout user and delete token
 /register/refresh --> Verify the user's token
 
-Operation endpoint
+* Operation endpoint
 
 /operation/ --> List all operation
 /operation/:type/:num --> Perform the requested operation
 /operation/create --> Create new operation
 
-Record endpoint
+* Record endpoint
 
 /record/ --> List all records
 /record/:id --> List record by Id
