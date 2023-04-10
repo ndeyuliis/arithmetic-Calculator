@@ -2,8 +2,9 @@ import Operation from '../models/operation'
 import User from '../models/user'
 import Record from '../models/record'
 import RandomOrg from 'random-org'
+import { Request, Response } from 'express'
 
-export const FindAllOperation = async (req, res) => {
+export const FindAllOperation = async (req: Request, res: Response) => {
   await Operation.find()
     .then((operations) => {
       res.json(operations)
@@ -15,7 +16,7 @@ export const FindAllOperation = async (req, res) => {
     })
 }
 
-export const createOperation = async (req, res) => {
+export const createOperation = async (req: Request, res: Response) => {
   if (req.body.type) {
     const newOperation = new Operation({
       type: req.body.type,
@@ -27,7 +28,7 @@ export const createOperation = async (req, res) => {
   }
 }
 
-export const veriRecord = async (req, res) => {
+export const veriRecord = async (req: Request, res: Response) => {
   console.log(req.params.num, req.params.type)
   const userData = await User.findOne({ userName: req.body.userName })
   const recordData = await Record.find({ user_id: userData?._id })
@@ -63,69 +64,57 @@ export const veriRecord = async (req, res) => {
   }
 }
 
+const operationFunctions = {
+  addition: (balance:Number, value:Number) => add(balance, value),
+  subtraction: (balance:Number, value:Number) => subtract(balance, value),
+  multiplication: (balance:Number, value:Number) => multiply(balance, value),
+  division: (balance:Number, value:Number) => divide(balance, value),
+  square_root: (balance: Number) => square_root(balance),
+  random: (value: Number) => randomInteger(value),
+}
+
 const operations = async (record, typeOperation, valueUser) => {
-  let result
   console.log(record, 'record')
-  switch (typeOperation) {
-    case 'addition':
-      result = await add(record.user_balance, valueUser)
-      break
-
-    case 'subtraction':
-      result = await subtract(record.user_balance, valueUser)
-      break
-
-    case 'multiplication':
-      result = await multiply(record.user_balance, valueUser)
-      break
-
-    case 'division':
-      result = await divide(record.user_balance, valueUser)
-      break
-
-    case 'square_root':
-      result = await square_root(record.user_balance)
-      break
-
-    case 'random':
-      result = await randomInteger(valueUser)
-      break
-
-    default:
-      result = 'Sorry, please enter a valid operator!'
+  const operation = operationFunctions[typeOperation]
+  console.log(operation, 'operation')
+  if (!operation) {
+    console.error('Sorry, please enter a valid operator!')
+    return 'Sorry, please enter a valid operator!'
   }
+
+  const result = await operation(record.user_balance, valueUser)
   console.log(result, 'result operation')
   return result
 }
 
-const add = async (amount, value) => {
+const add = async (amount: Number, value: Number): Promise<number> => {
   return Number(amount) + Number(value)
 }
 
-const subtract = async (amount, value) => {
+const subtract = async (amount: Number, value: Number): Promise<number> => {
   return Number(amount) - Number(value)
 }
 
-const multiply = async (amount, value) => {
+const multiply = async (amount: Number, value: Number): Promise<number> => {
   return Number(amount) * Number(value)
 }
 
-const divide = async (amount, value) => {
+const divide = async (amount: Number, value: Number): Promise<number> => {
   return Number(amount) / Number(value)
 }
-const square_root = async (value) => {
-  return Math.sqrt(value)
+const square_root = async (value: Number): Promise<number> => {
+  return Math.sqrt(Number(value))
 }
 
-const randomInteger = async (value) => {
+const randomInteger = async (value: Number): Promise<string> => {
   const random = new RandomOrg({
     apiKey: '1f84e5d7-6c21-4cca-8c8a-770240cf3773',
   })
   const valueFinal = await random
-    .generateStrings({ n: value, length: 10, characters: 'string' })
+    .generateStrings({ n: Number(value), length: 10, characters: 'string' })
     .then(function (result) {
       return result.random.data
     })
   console.log(valueFinal[0])
-  return valueFinal[0]
+  return String(valueFinal[0])
 }

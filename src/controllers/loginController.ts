@@ -43,7 +43,7 @@ export const createUser = async (req: Request, res: Response) => {
 }
 
 // login
-export const loginUser = async (req, res) => {
+export const loginUser = async (req: Request, res: Response) => {
   const { userName, password } = req.body
   if (!(userName && password)) {
     return res.status(400).send('Email and password is required')
@@ -54,12 +54,12 @@ export const loginUser = async (req, res) => {
   } else if (existEmail.status == 'active') {
     const existPass = bcrypt.compareSync(password, existEmail.password)
     if (existPass === true) {
-      const tokenSeguridad = await createToken(existEmail, existPass)
+      const tokenSecurity = await createToken(existEmail, existPass)
       await User.updateOne(
         { userName },
         {
           $set: {
-            token: tokenSeguridad,
+            token: tokenSecurity,
           },
         }
       )
@@ -70,7 +70,7 @@ export const loginUser = async (req, res) => {
       })
       await newRecord.save()
 
-      return res.status(200).json({ token: tokenSeguridad })
+      return res.status(200).json({ token: tokenSecurity })
     } else {
       return res.status(400).send('The email or Password is wrong')
     }
@@ -80,7 +80,7 @@ export const loginUser = async (req, res) => {
 }
 
 // logout
-export const updateUser = async (req, res) => {
+export const updateUser = async (req: Request, res: Response) => {
   try {
     if (!req.body.userName && !req.body.password) {
       return res.status(400).send({
@@ -106,9 +106,9 @@ export const updateUser = async (req, res) => {
   }
 }
 
-function validateEmail(email) {
+function validateEmail(email:String) {
   const re = /\S+@\S+\.\S+/
-  const result = re.test(email)
+  const result = re.test(String(email))
   return result
 }
 

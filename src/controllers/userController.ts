@@ -1,6 +1,7 @@
 import Users from '../models/user'
+import { Request, Response } from 'express'
 
-export const FindAllUsers = async (req, res) => {
+export const FindAllUsers = async (req: Request, res: Response) => {
   await Users.find()
     .then((usersFind) => {
       res.json(usersFind)
@@ -12,7 +13,7 @@ export const FindAllUsers = async (req, res) => {
     })
 }
 
-export const findUser = async (req, res) => {
+export const findUser = async (req: Request, res: Response) => {
   try {
     const userFind = await Users.findById(req.params.id)
     if (!userFind)
