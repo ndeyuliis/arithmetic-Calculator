@@ -1,14 +1,11 @@
-import { model, Schema } from 'mongoose'
+import { model, Schema, Document } from 'mongoose'
 
-const operationSchema = new Schema(
-  {
-    type: {
+const schema = new Schema({
       type: String,
-    },
-  },
-  {
-    versionKey: false,
-  }
-)
+})
 
-export default model('operation', operationSchema)
+export interface IOperation extends Document{
+  type: String;
+}
+
+export default model<IOperation>('Operation', schema)
