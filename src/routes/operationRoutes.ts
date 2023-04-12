@@ -9,7 +9,7 @@ import auth from '../middlewares/auth'
 const router = Router()
 
 router.get('/', FindAllOperation)
-router.put('/:type/:num', auth, veriRecord)
+//router.put('/:type/:num', auth, veriRecord)
 router.post('/create', createOperation)
 
 export default router

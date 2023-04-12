@@ -2,6 +2,7 @@ import express from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
 import Routes from './routes/indexRoutes'
+import ErrorHandler from './middlewares/error.handler'
 // initializations
 
 const app = express()
@@ -21,5 +22,6 @@ app.get('/', (req, res) => {
 })
 
 app.use(Routes)
+app.use(ErrorHandler)
 
 export default app

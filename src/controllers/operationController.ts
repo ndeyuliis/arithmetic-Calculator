@@ -1,38 +1,45 @@
-import Operation, {IOperation} from '../models/operation'
+import Operation, { IOperation } from '../models/operation'
 import User from '../models/user'
 import Record from '../models/record'
 import RandomOrg from 'random-org'
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 
-export const FindAllOperation = async (req: Request, res: Response) => {
-  try {
-    await Operation.find()
-      .then((operations) => {
-        res.json(operations)
+export const FindAllOperation = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  await Operation.find()
+    .then((operations) => {
+      res.json(operations)
+    })
+    .catch((err) => {
+      next({
+        status: 400,
+        message: err.message || 'Can not find the operations',
       })
-      .catch((err) => {
-        res.status(404).json({
-          message: err.message || 'Can not find the operations',
-        })
-      })
-  } catch (err) {
-    res.status(500).json({ msg: err })
-  }
+    })
 }
 
 export const createOperation = async (
-  req: Request<{type: IOperation}>,
-  res: Response
+  req: Request<{ type: IOperation }>,
+  res: Response,
+  next: NextFunction
 ) => {
-  if (req.body.type) {
-    const newOperation = {type: req.body.type}
-    const operation = new Operation(newOperation)
-    await operation.save()
-    res.status(200).json({ msg: 'The type of operation was added' })
-  } else {
-    res.status(400).json({ msg: 'Please add type of operation' })
+  try {
+    if (req.body.type) {
+      const newOperation = { type: req.body.type }
+      const operation = new Operation(newOperation)
+      await operation.save()
+      res.status(200).json({ msg: 'The type of operation was added' })
+    } else {
+      next({ status: 403, message: 'Please add type of operation' })
+    }
+  } catch (error) {
+    next({ status: 500, message: ' Something went wrong' })
   }
 }
+
 type OperationType =
   | 'addition'
   | 'subtraction'
@@ -42,8 +49,9 @@ type OperationType =
   | 'random'
 
 export const veriRecord = async (
-  req: Request<{type:OperationType, num:Number }>,
-  res: Response
+  req: Request<{ type: OperationType; num: Number }>,
+  res: Response,
+  next: NextFunction
 ) => {
   try {
     console.log(req.params.num, req.params.type)
@@ -52,7 +60,7 @@ export const veriRecord = async (
     const recordData = await Record.find({ user_id: userData?._id })
       .sort({ $natural: -1 })
       .limit(1)
-    const newOperation = {type: req.params.type}
+    const newOperation = { type: req.params.type }
     const operationData = await Operation.find(newOperation)
     console.log(operationData, 'operation')
     if (recordData[0] != undefined) {
@@ -61,7 +69,7 @@ export const veriRecord = async (
         req.params.type,
         req.params.num
       )
-      if (typeof totalOperation == 'number' && totalOperation < 0 ) {
+      if (typeof totalOperation == 'number' && totalOperation < 0) {
         res.status(200).json({ msg: 'enough to cover the request' })
       } else {
         const dateNow = Date.now()
@@ -80,10 +88,10 @@ export const veriRecord = async (
         res.status(200).json({ msg: 'Operation correct' })
       }
     } else {
-      res.status(400).json({ msg: 'The user must login ' })
+      next({ status: 403, message: 'The user must login ' })
     }
   } catch (err) {
-    res.status(500).json({ msg: err })
+    next({ status: 500, message: ' Something went wrong' })
   }
 }
 

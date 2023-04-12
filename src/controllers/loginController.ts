@@ -1,9 +1,11 @@
 import User from '../models/user'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import config from '../config/config'
 import Record from '../models/record'
+
+const secret = String(process.env.SECRET)
 
 async function createToken(user: String, password: String) {
   return jwt.sign({ user, password }, config.jwtSecret, {
@@ -12,21 +14,23 @@ async function createToken(user: String, password: String) {
 }
 
 // singup
-export const createUser = async (req: Request, res: Response) => {
+export const createUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     if (!(req.body.userName && req.body.password)) {
-      return res
-        .status(400)
-        .json({ msg: 'Please send your email and password' })
+      next({ status: 400, message: 'Please send your email and password' })
     }
     const emailValid = validateEmail(req.body.userName)
     if (emailValid === false) {
-      return res.status(409).send('Email is incorrect')
+      next({ status: 403, message: ' Email is incorrect' })
     }
     const userExist = await User.findOne({ userName: req.body.userName })
 
     if (userExist) {
-      return res.status(400).json({ msg: ' The user exist' })
+      next({ status: 400, message: ' The user exist' })
     }
     const encryptPass = await register(req.body.password)
 
@@ -38,20 +42,24 @@ export const createUser = async (req: Request, res: Response) => {
     const userSaved = await newUser.save()
     res.status(201).json(userSaved)
   } catch (err) {
-    res.status(500).send('error')
+    next({ status: 500, message: ' Something went wrong' })
   }
 }
 
 // login
-export const loginUser = async (req: Request, res: Response) => {
+export const loginUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { userName, password } = req.body
   try {
     if (!(userName && password)) {
-      return res.status(400).send('Email and password is required')
+      next({ status: 400, message: 'Email and password is required' })
     }
     const existEmail = await User.findOne({ userName })
     if (!existEmail) {
-      return res.status(400).send('Email does not exist')
+      next({ status: 400, message: 'Email does not exist' })
     } else if (existEmail.status == 'active') {
       const existPass = bcrypt.compareSync(password, existEmail.password)
       if (existPass === true) {
@@ -73,23 +81,25 @@ export const loginUser = async (req: Request, res: Response) => {
 
         return res.status(200).json({ token: tokenSecurity })
       } else {
-        return res.status(400).send('The email or Password is wrong')
+        next({ status: 400, message: 'The email or Password is wrong' })
       }
     } else {
-      return res.status(400).send('The user is inactive')
+      next({ status: 400, message: 'The user is inactive' })
     }
   } catch (err) {
-    return res.status(500).json({ msg: err })
+    next({ status: 500, message: ' Something went wrong' })
   }
 }
 
 // logout
-export const updateUser = async (req: Request, res: Response) => {
+export const updateUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     if (!req.body.userName && !req.body.password) {
-      return res.status(400).send({
-        message: 'User login can not be empty',
-      })
+      next({ status: 400, message: 'User login can not be empty' })
     }
     const dateNow = Date.now()
     await User.updateOne(
@@ -106,7 +116,7 @@ export const updateUser = async (req: Request, res: Response) => {
 
     res.send('The session has been closed')
   } catch (err) {
-    res.json(err)
+    next({ status: 500, message: err || ' Something went wrong' })
   }
 }
 
