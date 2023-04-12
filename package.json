@@ -10,7 +10,9 @@
     "format:check": "prettier --check .",
     "format:write": "prettier --write .",
     "lint:check": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "lint:fix": "eslint --fix .",
+    "lint": "eslint --ignore-path .gitignore --ext .ts src/",
+    "format": "prettier . --write"
   },
   "keywords": [],
   "author": "",

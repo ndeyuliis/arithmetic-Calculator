@@ -4,20 +4,27 @@ import User from '../models/user'
 import { Request, Response, NextFunction } from 'express'
 
 const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
-  const token = String(req.headers['token'])
-  if (!token || token == undefined) {
-    return res.status(403).send('A token is required for authentication')
-  }
   try {
-    jwt.verify(token, config.jwtSecret)
-    const existEmail = await User.findOne({ userName: req.body.userName })
-    console.log(existEmail?.token, token)
-    if (existEmail?.token === token) {
+    console.log(req.header('authorization'))
+    if (
+      !req.header('authorization') ||
+      req.header('authorization') == undefined
+    ) {
+      next({ status: 403, message: 'A token is required for authentication' })
     } else {
-      return res.status(401).send('Please login')
+      const token: string = req.header('authorization') || ''
+
+      console.log(token, config.jwtSecret)
+      const payload = jwt.verify(token, config.jwtSecret)
+      const existEmail = await User.findOne({ userName: req.body.userName })
+      console.log(payload, 'error token')
+      if (existEmail?.token === token) {
+      } else {
+        next({ status: 403, message: 'Please login' })
+      }
     }
   } catch (err) {
-    return res.status(401).send('Invalid Token')
+    next({ status: 500, message: err || ' Something went wrong' })
   }
   return next()
 }

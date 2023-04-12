@@ -18,10 +18,7 @@ router.get('/ping', (req, res) => {
 
 // in case the link does not exist
 router.use((req, res, next) => {
-  res.status(404)
-  res.json({
-    message: 'Error: Path not found',
-  })
+  next({ status: 400, message: ' This path not found' })
 })
 
 export default router
