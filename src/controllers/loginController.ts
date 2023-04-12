@@ -45,37 +45,41 @@ export const createUser = async (req: Request, res: Response) => {
 // login
 export const loginUser = async (req: Request, res: Response) => {
   const { userName, password } = req.body
-  if (!(userName && password)) {
-    return res.status(400).send('Email and password is required')
-  }
-  const existEmail = await User.findOne({ userName })
-  if (!existEmail) {
-    return res.status(400).send('Email does not exist')
-  } else if (existEmail.status == 'active') {
-    const existPass = bcrypt.compareSync(password, existEmail.password)
-    if (existPass === true) {
-      const tokenSecurity = await createToken(userName, password)
-      await User.updateOne(
-        { userName },
-        {
-          $set: {
-            token: tokenSecurity,
-          },
-        }
-      )
-      const newRecord = new Record({
-        user_id: existEmail?._id,
-        amount: 50000,
-        user_balance: 50000,
-      })
-      await newRecord.save()
-
-      return res.status(200).json({ token: tokenSecurity })
-    } else {
-      return res.status(400).send('The email or Password is wrong')
+  try {
+    if (!(userName && password)) {
+      return res.status(400).send('Email and password is required')
     }
-  } else {
-    return res.status(400).send('The user is inactive')
+    const existEmail = await User.findOne({ userName })
+    if (!existEmail) {
+      return res.status(400).send('Email does not exist')
+    } else if (existEmail.status == 'active') {
+      const existPass = bcrypt.compareSync(password, existEmail.password)
+      if (existPass === true) {
+        const tokenSecurity = await createToken(userName, password)
+        await User.updateOne(
+          { userName },
+          {
+            $set: {
+              token: tokenSecurity,
+            },
+          }
+        )
+        const newRecord = new Record({
+          user_id: existEmail?._id,
+          amount: 50000,
+          user_balance: 50000,
+        })
+        await newRecord.save()
+
+        return res.status(200).json({ token: tokenSecurity })
+      } else {
+        return res.status(400).send('The email or Password is wrong')
+      }
+    } else {
+      return res.status(400).send('The user is inactive')
+    }
+  } catch (err) {
+    return res.status(500).json({ msg: err })
   }
 }
 

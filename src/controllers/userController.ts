@@ -2,15 +2,19 @@ import Users from '../models/user'
 import { Request, Response } from 'express'
 
 export const FindAllUsers = async (req: Request, res: Response) => {
-  await Users.find()
-    .then((usersFind) => {
-      res.json(usersFind)
-    })
-    .catch((err) => {
-      res.status(404).json({
-        message: err.message || 'Can not find the Users',
+  try {
+    await Users.find()
+      .then((usersFind) => {
+        res.json(usersFind)
       })
-    })
+      .catch((err) => {
+        res.status(404).json({
+          message: err.message || 'Can not find the Users',
+        })
+      })
+  } catch (err) {
+    res.status(404).json({ msg: err })
+  }
 }
 
 export const findUser = async (req: Request, res: Response) => {
