@@ -4,6 +4,9 @@ import Record from '../models/record'
 import RandomOrg from 'random-org'
 import { Request, Response } from 'express'
 
+interface Operation {
+  type: String
+}
 export const FindAllOperation = async (req: Request, res: Response) => {
   await Operation.find()
     .then((operations) => {
@@ -16,7 +19,10 @@ export const FindAllOperation = async (req: Request, res: Response) => {
     })
 }
 
-export const createOperation = async (req: Request, res: Response) => {
+export const createOperation = async (
+  req: Request<{ type: Operation }>,
+  res: Response
+) => {
   if (req.body.type) {
     const newOperation = new Operation({
       type: req.body.type,
@@ -27,9 +33,21 @@ export const createOperation = async (req: Request, res: Response) => {
     res.status(400).json({ msg: 'Please add type of operation' })
   }
 }
+type OperationType =
+  | 'addition'
+  | 'subtraction'
+  | 'multiplication'
+  | 'division'
+  | 'square_root'
+  | 'random'
 
-export const veriRecord = async (req: Request, res: Response) => {
+export const veriRecord = async (
+  req: Request<{ type: OperationType; num: Number }>,
+  res: Response
+) => {
   console.log(req.params.num, req.params.type)
+  let typeOperation = req.params.type
+
   const userData = await User.findOne({ userName: req.body.userName })
   const recordData = await Record.find({ user_id: userData?._id })
     .sort({ $natural: -1 })
@@ -39,7 +57,7 @@ export const veriRecord = async (req: Request, res: Response) => {
   if (recordData[0] != undefined) {
     const totalOperation = await operations(
       recordData[0],
-      req.params.type,
+      typeOperation,
       req.params.num
     )
     if (totalOperation < 0) {
@@ -51,9 +69,10 @@ export const veriRecord = async (req: Request, res: Response) => {
         operation_id: operationData[0]._id,
         amount: recordData[0].amount,
         operation_response: totalOperation,
-        user_balance: !isNaN(totalOperation)
-          ? totalOperation
-          : recordData[0].user_balance,
+        user_balance:
+          typeof totalOperation == 'number'
+            ? totalOperation
+            : recordData[0].user_balance,
         date: dateNow,
       })
       await newRecord.save()
@@ -73,10 +92,14 @@ const operationFunctions = {
   random: (value: Number) => randomInteger(value),
 }
 interface Record {
-  user_balance: number
+  user_balance: Number
 }
 
-const operations = async (record: Record, typeOperation, valueUser: String) => {
+const operations = async (
+  record: Record,
+  typeOperation: OperationType,
+  valueUser: Number
+): Promise<number | String> => {
   console.log(record, 'record')
   const operation = operationFunctions[typeOperation]
   console.log(operation, 'operation')
@@ -109,7 +132,7 @@ const square_root = async (value: Number): Promise<number> => {
   return Math.sqrt(Number(value))
 }
 
-const randomInteger = async (value: Number): Promise<string> => {
+const randomInteger = async (value: Number): Promise<String> => {
   const random = new RandomOrg({
     apiKey: '1f84e5d7-6c21-4cca-8c8a-770240cf3773',
   })
