@@ -3,15 +3,19 @@ import Record from '../models/record'
 import { Request, Response } from 'express'
 
 export const FindAllRecords = async (req: Request, res: Response) => {
-  await Record.find()
-    .then((records) => {
-      res.json(records)
-    })
-    .catch((err) => {
-      res.status(404).json({
-        message: err.message || 'Can not find the records',
+  try {
+    await Record.find()
+      .then((records) => {
+        res.json(records)
       })
-    })
+      .catch((err) => {
+        res.status(404).json({
+          message: err.message || 'Can not find the records',
+        })
+      })
+  } catch (err) {
+    res.status(400).json({ msg: err })
+  }
 }
 
 export const findRecord = async (req: Request, res: Response) => {

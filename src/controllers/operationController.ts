@@ -8,15 +8,19 @@ interface Operation {
   type: String
 }
 export const FindAllOperation = async (req: Request, res: Response) => {
-  await Operation.find()
-    .then((operations) => {
-      res.json(operations)
-    })
-    .catch((err) => {
-      res.status(404).json({
-        message: err.message || 'Can not find the operations',
+  try {
+    await Operation.find()
+      .then((operations) => {
+        res.json(operations)
       })
-    })
+      .catch((err) => {
+        res.status(404).json({
+          message: err.message || 'Can not find the operations',
+        })
+      })
+  } catch (err) {
+    res.status(500).json({ msg: err })
+  }
 }
 
 export const createOperation = async (
@@ -45,41 +49,45 @@ export const veriRecord = async (
   req: Request<{ type: OperationType; num: Number }>,
   res: Response
 ) => {
-  console.log(req.params.num, req.params.type)
-  let typeOperation = req.params.type
+  try {
+    console.log(req.params.num, req.params.type)
+    let typeOperation = req.params.type
 
-  const userData = await User.findOne({ userName: req.body.userName })
-  const recordData = await Record.find({ user_id: userData?._id })
-    .sort({ $natural: -1 })
-    .limit(1)
-  const operationData = await Operation.find({ type: req.params.type })
-  console.log(operationData, 'operation')
-  if (recordData[0] != undefined) {
-    const totalOperation = await operations(
-      recordData[0],
-      typeOperation,
-      req.params.num
-    )
-    if (totalOperation < 0) {
-      res.status(200).json({ msg: 'enough to cover the request' })
+    const userData = await User.findOne({ userName: req.body.userName })
+    const recordData = await Record.find({ user_id: userData?._id })
+      .sort({ $natural: -1 })
+      .limit(1)
+    const operationData = await Operation.find({ type: req.params.type })
+    console.log(operationData, 'operation')
+    if (recordData[0] != undefined) {
+      const totalOperation = await operations(
+        recordData[0],
+        typeOperation,
+        req.params.num
+      )
+      if (totalOperation < 0) {
+        res.status(200).json({ msg: 'enough to cover the request' })
+      } else {
+        const dateNow = Date.now()
+        const newRecord = new Record({
+          user_id: userData?._id,
+          operation_id: operationData[0]._id,
+          amount: recordData[0].amount,
+          operation_response: totalOperation,
+          user_balance:
+            typeof totalOperation == 'number'
+              ? totalOperation
+              : recordData[0].user_balance,
+          date: dateNow,
+        })
+        await newRecord.save()
+        res.status(200).json({ msg: 'Operation correct' })
+      }
     } else {
-      const dateNow = Date.now()
-      const newRecord = new Record({
-        user_id: userData?._id,
-        operation_id: operationData[0]._id,
-        amount: recordData[0].amount,
-        operation_response: totalOperation,
-        user_balance:
-          typeof totalOperation == 'number'
-            ? totalOperation
-            : recordData[0].user_balance,
-        date: dateNow,
-      })
-      await newRecord.save()
-      res.status(200).json({ msg: 'Operation correct' })
+      res.status(400).json({ msg: 'The user must login ' })
     }
-  } else {
-    res.status(400).json({ msg: 'The user must login ' })
+  } catch (err) {
+    res.status(500).json({ msg: err })
   }
 }
 
