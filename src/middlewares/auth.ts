@@ -5,7 +5,6 @@ import { Request, Response, NextFunction } from 'express'
 
 const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log(req.header('authorization'))
     if (
       !req.header('authorization') ||
       req.header('authorization') == undefined
@@ -14,10 +13,9 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
     } else {
       const token: string = req.header('authorization') || ''
 
-      console.log(token, config.jwtSecret)
       const payload = jwt.verify(token, config.jwtSecret)
       const existEmail = await User.findOne({ userName: req.body.userName })
-      console.log(payload, 'error token')
+      console.log(payload, ' token')
       if (existEmail?.token === token) {
       } else {
         next({ status: 403, message: 'Please login' })

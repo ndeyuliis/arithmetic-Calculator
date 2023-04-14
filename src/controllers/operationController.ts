@@ -3,7 +3,6 @@ import { User } from '../models/user'
 import { Record } from '../models/record'
 import RandomOrg from 'random-org'
 import { NextFunction, Request, Response } from 'express'
-import { ParamsDictionary, Query } from 'express-serve-static-core'
 
 export const FindAllOperation = async (
   req: Request,
@@ -47,7 +46,7 @@ enum OperationType {
   division = 'division',
   square_root = 'square_root',
   multiplication = 'multiplication',
-  random_string = 'random',
+  random = 'random',
 }
 interface Params {
   type: OperationType
@@ -69,7 +68,6 @@ export const veriRecord = async (
 
     const newOperation = { type: req.params.type }
     const operationData = await Operation.find(newOperation)
-    console.log(operationData, 'operation')
     if (recordData[0] != undefined) {
       const totalOperation = await operations(
         recordData[0],
@@ -108,8 +106,8 @@ const operationFunctions = {
   subtraction: (balance: Number, value: Number) => subtract(balance, value),
   multiplication: (balance: Number, value: Number) => multiply(balance, value),
   division: (balance: Number, value: Number) => divide(balance, value),
-  square_root: (balance: Number) => square_root(balance),
-  random: (value: Number) => randomInteger(value),
+  square_root: (balance: Number, value: Number) => square_root(balance, value),
+  random: (balance: Number, value: Number) => randomInteger(balance, value),
 }
 interface Record {
   user_balance: Number
@@ -120,20 +118,21 @@ const operations = async (
   typeOperation: OperationType,
   valueUser: Number
 ): Promise<number | String> => {
-  console.log(record, 'record')
+  console.log(typeOperation, 'value of operations')
   const operation = operationFunctions[typeOperation]
-  console.log(operation, 'operation')
+  console.log(operation, 'operation return')
   if (!operation) {
     console.error('Sorry, please enter a valid operator!')
     return 'Sorry, please enter a valid operator!'
   }
 
   const result = await operation(record.user_balance, valueUser)
-  console.log(result, 'result operation')
+  console.log(result, 'result final operation')
   return result
 }
 
 const add = async (amount: Number, value: Number): Promise<number> => {
+  console.log(amount, 'user balance', value, ' valor ingresado ')
   return Number(amount) + Number(value)
 }
 
@@ -148,11 +147,17 @@ const multiply = async (amount: Number, value: Number): Promise<number> => {
 const divide = async (amount: Number, value: Number): Promise<number> => {
   return Number(amount) / Number(value)
 }
-const square_root = async (value: Number): Promise<number> => {
+const square_root = async (balance: Number, value: Number): Promise<number> => {
+  console.log(value)
   return Math.sqrt(Number(value))
 }
 
-const randomInteger = async (value: Number): Promise<string> => {
+const randomInteger = async (
+  balance: Number,
+  value: Number
+): Promise<String> => {
+  console.log(value, 'enter to random')
+
   const random = new RandomOrg({
     apiKey: '1f84e5d7-6c21-4cca-8c8a-770240cf3773',
   })
@@ -161,6 +166,6 @@ const randomInteger = async (value: Number): Promise<string> => {
     .then(function (result) {
       return result.random.data
     })
-  console.log(valueFinal[0])
+  console.log(valueFinal[0], 'return random')
   return String(valueFinal[0])
 }
