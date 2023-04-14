@@ -1,6 +1,8 @@
 import { json } from 'express'
-import Record from '../models/record'
+import { IRecord, Record } from '../models/record'
 import { NextFunction, Request, Response } from 'express'
+import { User } from '../models/user'
+import { Operation } from '../models/operation'
 
 export const FindAllRecords = async (
   req: Request,
@@ -27,9 +29,13 @@ export const findRecord = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   try {
     const record = await Record.findById(req.params.id)
+      .populate('Operation', 'type')
+      .populate('User', 'userName')
+      .exec()
+    //console.log(record)
     if (!record) next({ status: 400, message: 'El record don´t exist' })
     res.json(record)
   } catch (error) {

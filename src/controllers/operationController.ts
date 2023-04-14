@@ -1,8 +1,9 @@
-import Operation, { IOperation } from '../models/operation'
-import User from '../models/user'
-import Record from '../models/record'
+import { Operation } from '../models/operation'
+import { User } from '../models/user'
+import { Record } from '../models/record'
 import RandomOrg from 'random-org'
 import { NextFunction, Request, Response } from 'express'
+import { ParamsDictionary, Query } from 'express-serve-static-core'
 
 export const FindAllOperation = async (
   req: Request,
@@ -22,7 +23,7 @@ export const FindAllOperation = async (
 }
 
 export const createOperation = async (
-  req: Request<{ type: IOperation }>,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -40,34 +41,40 @@ export const createOperation = async (
   }
 }
 
-type OperationType =
-  | 'addition'
-  | 'subtraction'
-  | 'multiplication'
-  | 'division'
-  | 'square_root'
-  | 'random'
+enum OperationType {
+  addition = 'addition',
+  subtraction = 'subtraction',
+  division = 'division',
+  square_root = 'square_root',
+  multiplication = 'multiplication',
+  random_string = 'random',
+}
+interface Params {
+  type: OperationType
+  num: number
+}
 
 export const veriRecord = async (
-  req: Request<{ type: OperationType; num: Number }>,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    console.log(req.params.num, req.params.type)
+    console.log(req.body.num, 'number param', req.params.type, 'type param')
 
     const userData = await User.findOne({ userName: req.body.userName })
     const recordData = await Record.find({ user_id: userData?._id })
       .sort({ $natural: -1 })
       .limit(1)
+
     const newOperation = { type: req.params.type }
     const operationData = await Operation.find(newOperation)
     console.log(operationData, 'operation')
     if (recordData[0] != undefined) {
       const totalOperation = await operations(
         recordData[0],
-        req.params.type,
-        req.params.num
+        OperationType[req.params.type as keyof typeof OperationType],
+        req.body.num
       )
       if (typeof totalOperation == 'number' && totalOperation < 0) {
         res.status(200).json({ msg: 'enough to cover the request' })
@@ -84,7 +91,8 @@ export const veriRecord = async (
               : recordData[0].user_balance,
           date: dateNow,
         })
-        await newRecord.save()
+        const saveRecord = await newRecord.save()
+        console.log(saveRecord, 'grabado')
         res.status(200).json({ msg: 'Operation correct' })
       }
     } else {
@@ -144,7 +152,7 @@ const square_root = async (value: Number): Promise<number> => {
   return Math.sqrt(Number(value))
 }
 
-const randomInteger = async (value: Number): Promise<String> => {
+const randomInteger = async (value: Number): Promise<string> => {
   const random = new RandomOrg({
     apiKey: '1f84e5d7-6c21-4cca-8c8a-770240cf3773',
   })
