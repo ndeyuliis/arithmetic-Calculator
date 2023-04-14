@@ -1,4 +1,12 @@
-import { model, Schema } from 'mongoose'
+import mongoose, { Schema } from 'mongoose'
+
+export interface IUser extends mongoose.Document {
+  username: string
+  password: string
+  status: 'active' | 'inactive'
+  balance: number
+  token: string
+}
 
 const userSchema = new Schema(
   {
@@ -16,6 +24,7 @@ const userSchema = new Schema(
     status: {
       type: String,
       require: true,
+      default: 'active',
     },
     amount: {
       type: Number,
@@ -37,4 +46,4 @@ userSchema.pre('save', function () {
   const user = this
 })
 
-export default model('user', userSchema)
+export const User = mongoose.model<IUser>('User', userSchema)

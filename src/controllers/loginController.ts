@@ -1,9 +1,9 @@
-import User from '../models/user'
+import { User } from '../models/user'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { NextFunction, Request, Response } from 'express'
 import config from '../config/config'
-import Record from '../models/record'
+import { Record } from '../models/record'
 
 const secret = String(process.env.SECRET)
 

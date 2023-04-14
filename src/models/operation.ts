@@ -1,11 +1,20 @@
-import { model, Schema, Document } from 'mongoose'
+import mongoose, { Schema } from 'mongoose'
 
-const schema = new Schema({
+const operationSchema = new Schema({
   type: String,
 })
 
-export interface IOperation extends Document {
-  type: String
+export interface IOperation extends mongoose.Document {
+  type:
+    | 'addition'
+    | 'subtraction'
+    | 'multiplication'
+    | 'division'
+    | 'square_root'
+    | 'random_string'
 }
 
-export default model<IOperation>('Operation', schema)
+export const Operation = mongoose.model<IOperation>(
+  'Operation',
+  operationSchema
+)

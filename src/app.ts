@@ -1,11 +1,11 @@
-import express from 'express'
+import express, { Express } from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
 import Routes from './routes/indexRoutes'
 import ErrorHandler from './middlewares/error.handler'
 // initializations
 
-const app = express()
+const app: Express = express()
 
 // settings
 app.set('port', process.env.PORT || 3000)

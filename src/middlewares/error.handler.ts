@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express'
 
 interface IError {
   status: number
-  message: String
+  message: string
 }
 
 function ErrorHandler(
@@ -12,7 +12,7 @@ function ErrorHandler(
   next: NextFunction
 ) {
   res.status(Error.status || 500)
-  res.send({ msg: Error.message || ' Internal server error' })
+  res.json({ msg: Error.message || ' Internal server error' })
 }
 
 export default ErrorHandler
