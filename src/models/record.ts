@@ -1,5 +1,15 @@
-import { model, Schema } from 'mongoose'
-import mongoose from 'mongoose'
+import mongoose, { Schema } from 'mongoose'
+import { IUser } from './user'
+import { IOperation } from './operation'
+
+export interface IRecord extends mongoose.Document {
+  operation: IOperation['_id']
+  user: IUser['_id']
+  amount: number
+  user_balance: number
+  operation_response: string
+  date: Date
+}
 
 const recordSchema = new Schema(
   {
@@ -8,9 +18,11 @@ const recordSchema = new Schema(
     },
     operation_id: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: 'operation',
     },
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: 'user',
     },
     amount: {
       type: String,
@@ -24,6 +36,7 @@ const recordSchema = new Schema(
     },
     date: {
       type: Date,
+      default: Date.now(),
     },
   },
   {
@@ -31,4 +44,4 @@ const recordSchema = new Schema(
   }
 )
 
-export default model('record', recordSchema)
+export const Record = mongoose.model<IRecord>('Record', recordSchema)
